@@ -2,7 +2,11 @@
 
 function e(string $value): string
 {
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars(
+        $value,
+        ENT_QUOTES,
+        'UTF-8'
+    );
 }
 
 function validasiNama(string $nama): string
@@ -49,7 +53,6 @@ function validasiPilihan(
     array $daftar,
     string $namaField
 ): string {
-
     if ($nilai === '') {
         return $namaField . ' wajib dipilih.';
     }
