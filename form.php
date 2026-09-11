@@ -1,253 +1,125 @@
 <?php
 
-require_once 'functions.php';
-
 $nama = trim($_POST['nama'] ?? '');
-$nim = trim($_POST['nim'] ?? '');
 $email = trim($_POST['email'] ?? '');
-$programStudi = trim($_POST['program_studi'] ?? '');
-$kegiatan = trim($_POST['kegiatan'] ?? '');
-$jumlahPeserta = trim($_POST['jumlah_peserta'] ?? '');
-$persetujuan = isset($_POST['persetujuan']);
-
-$programStudiValid = [
-    'Manajemen Informatika',
-    'Sistem Informasi',
-    'Teknik Informatika'
-];
-
-$kegiatanValid = [
-    'Seminar',
-    'Workshop',
-    'Pelatihan'
-];
+$jumlah = filter_input(INPUT_POST, 'jumlah', FILTER_VALIDATE_INT);
 
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $error = validasiNama($nama);
-
-    if ($error !== '') {
-        $errors['nama'] = $error;
+    if ($nama === '') {
+        $errors['nama'] = 'Nama wajib diisi.';
+    } elseif (mb_strlen($nama) < 3) {
+        $errors['nama'] = 'Nama minimal 3 karakter.';
     }
 
-    $error = validasiNim($nim);
-
-    if ($error !== '') {
-        $errors['nim'] = $error;
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = 'Format email tidak valid.';
     }
 
-    $error = validasiEmail($email);
-
-    if ($error !== '') {
-        $errors['email'] = $error;
-    }
-
-    $error = validasiPilihan(
-        $programStudi,
-        $programStudiValid,
-        'Program studi'
-    );
-
-    if ($error !== '') {
-        $errors['program_studi'] = $error;
-    }
-
-    $error = validasiPilihan(
-        $kegiatan,
-        $kegiatanValid,
-        'Kegiatan'
-    );
-
-    if ($error !== '') {
-        $errors['kegiatan'] = $error;
-    }
-
-    $error = validasiJumlah($jumlahPeserta);
-
-    if ($error !== '') {
-        $errors['jumlah_peserta'] = $error;
-    }
-
-    $error = validasiPersetujuan($persetujuan);
-
-    if ($error !== '') {
-        $errors['persetujuan'] = $error;
+    if (
+        $jumlah === false ||
+        $jumlah === null ||
+        $jumlah < 1 ||
+        $jumlah > 5
+    ) {
+        $errors['jumlah'] = 'Jumlah peserta harus 1 sampai 5.';
     }
 
     if ($errors === []) {
-
         header(
-            'Location: sukses.php?' .
-            'nama=' . urlencode($nama) .
-            '&nim=' . urlencode($nim) .
-            '&program_studi=' . urlencode($programStudi) .
-            '&kegiatan=' . urlencode($kegiatan) .
-            '&jumlah=' . urlencode($jumlahPeserta)
+            'Location: sukses.php?nama=' .
+            urlencode($nama)
         );
-
         exit;
     }
 }
 
-$judul = 'Pendaftaran Kegiatan';
-
-require 'components/header.php';
+function e(string $value): string
+{
+    return htmlspecialchars(
+        $value,
+        ENT_QUOTES,
+        'UTF-8'
+    );
+}
 
 ?>
 
-<h2>Form Pendaftaran Kegiatan</h2>
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Form Pendaftaran</title>
+</head>
+
+<body>
+
+<h1>Form Pendaftaran</h1>
 
 <form method="post" novalidate>
 
-    <label>Nama</label>
-
-    <input
-        type="text"
-        name="nama"
-        value="<?= e($nama) ?>"
-    >
-
-    <?php if (isset($errors['nama'])): ?>
-
-        <div class="error">
-            <?= e($errors['nama']) ?>
-        </div>
-
-    <?php endif; ?>
-
-
-    <label>NIM</label>
-
-    <input
-        type="text"
-        name="nim"
-        value="<?= e($nim) ?>"
-    >
-
-    <?php if (isset($errors['nim'])): ?>
-
-        <div class="error">
-            <?= e($errors['nim']) ?>
-        </div>
-
-    <?php endif; ?>
-
-
-    <label>Email</label>
-
-    <input
-        type="email"
-        name="email"
-        value="<?= e($email) ?>"
-    >
-
-    <?php if (isset($errors['email'])): ?>
-
-        <div class="error">
-            <?= e($errors['email']) ?>
-        </div>
-
-    <?php endif; ?>
-
-
-    <label>Program Studi</label>
-
-    <select name="program_studi">
-
-        <option value="">-- Pilih Program Studi --</option>
-
-        <?php foreach ($programStudiValid as $item): ?>
-
-            <option
-                value="<?= e($item) ?>"
-                <?= $programStudi === $item ? 'selected' : '' ?>
-            >
-                <?= e($item) ?>
-            </option>
-
-        <?php endforeach; ?>
-
-    </select>
-
-    <?php if (isset($errors['program_studi'])): ?>
-
-        <div class="error">
-            <?= e($errors['program_studi']) ?>
-        </div>
-
-    <?php endif; ?>
-
-
-    <label>Kegiatan</label>
-
-    <select name="kegiatan">
-
-        <option value="">-- Pilih Kegiatan --</option>
-
-        <?php foreach ($kegiatanValid as $item): ?>
-
-            <option
-                value="<?= e($item) ?>"
-                <?= $kegiatan === $item ? 'selected' : '' ?>
-            >
-                <?= e($item) ?>
-            </option>
-
-        <?php endforeach; ?>
-
-    </select>
-
-    <?php if (isset($errors['kegiatan'])): ?>
-
-        <div class="error">
-            <?= e($errors['kegiatan']) ?>
-        </div>
-
-    <?php endif; ?>
-
-
-    <label>Jumlah Peserta</label>
-
-    <input
-        type="number"
-        name="jumlah_peserta"
-        min="1"
-        max="3"
-        value="<?= e($jumlahPeserta) ?>"
-    >
-
-    <?php if (isset($errors['jumlah_peserta'])): ?>
-
-        <div class="error">
-            <?= e($errors['jumlah_peserta']) ?>
-        </div>
-
-    <?php endif; ?>
-
-
     <label>
-
+        Nama:
         <input
-            type="checkbox"
-            name="persetujuan"
-            value="1"
-            <?= $persetujuan ? 'checked' : '' ?>
+            type="text"
+            name="nama"
+            value="<?= e($nama) ?>"
         >
-
-        Saya menyetujui pendaftaran kegiatan ini.
-
     </label>
 
-    <?php if (isset($errors['persetujuan'])): ?>
+    <br>
 
-        <div class="error">
-            <?= e($errors['persetujuan']) ?>
-        </div>
-
+    <?php if (isset($errors['nama'])): ?>
+        <small>
+            <?= e($errors['nama']) ?>
+        </small>
     <?php endif; ?>
 
+    <br><br>
+
+    <label>
+        Email:
+        <input
+            type="email"
+            name="email"
+            value="<?= e($email) ?>"
+        >
+    </label>
+
+    <br>
+
+    <?php if (isset($errors['email'])): ?>
+        <small>
+            <?= e($errors['email']) ?>
+        </small>
+    <?php endif; ?>
+
+    <br><br>
+
+    <label>
+        Jumlah peserta:
+        <input
+            type="number"
+            name="jumlah"
+            min="1"
+            max="5"
+            value="<?= e($_POST['jumlah'] ?? '1') ?>"
+        >
+    </label>
+
+    <br>
+
+    <?php if (isset($errors['jumlah'])): ?>
+        <small>
+            <?= e($errors['jumlah']) ?>
+        </small>
+    <?php endif; ?>
+
+    <br><br>
 
     <button type="submit">
         Daftar
@@ -255,8 +127,5 @@ require 'components/header.php';
 
 </form>
 
-<?php
-
-require 'components/footer.php';
-
-?>
+</body>
+</html>
