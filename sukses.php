@@ -8,57 +8,110 @@ $programStudi = trim($_GET['program_studi'] ?? '');
 $kegiatan = trim($_GET['kegiatan'] ?? '');
 $jumlah = trim($_GET['jumlah'] ?? '');
 
-$judul = 'Pendaftaran Berhasil';
-
-require 'components/header.php';
-
 ?>
 
-<h2 class="success">
-    Pendaftaran Berhasil
-</h2>
+<!doctype html>
+<html lang="id">
 
-<p>
-    Terima kasih, <?= e($nama) ?>.
-</p>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<h3>Ringkasan Pendaftaran</h3>
+    <title>Pendaftaran Berhasil</title>
 
-<p>
-    <strong>Nama:</strong>
-    <?= e($nama) ?>
-</p>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
-<p>
-    <strong>NIM:</strong>
-    <?= e($nim) ?>
-</p>
+        .container {
+            width: 600px;
+            max-width: 90%;
+            margin: 50px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
 
-<p>
-    <strong>Program Studi:</strong>
-    <?= e($programStudi) ?>
-</p>
+        h1 {
+            text-align: center;
+        }
 
-<p>
-    <strong>Kegiatan:</strong>
-    <?= e($kegiatan) ?>
-</p>
+        .success {
+            text-align: center;
+            font-weight: bold;
+        }
 
-<p>
-    <strong>Jumlah Peserta:</strong>
-    <?= e($jumlah) ?>
-</p>
+        .data {
+            margin-top: 20px;
+        }
 
-<p>
-    Data pendaftaran berhasil diproses.
-</p>
+        .data p {
+            margin: 10px 0;
+        }
 
-<a href="form.php">
-    Kembali ke Form
-</a>
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+    </style>
+</head>
 
-<?php
+<body>
 
-require 'components/footer.php';
+<div class="container">
 
-?>
+    <h1>Pendaftaran Berhasil</h1>
+
+    <p class="success">
+        Terima kasih, <?= e($nama) ?>.
+    </p>
+
+    <h3>Ringkasan Pendaftaran</h3>
+
+    <div class="data">
+
+        <p>
+            <strong>Nama:</strong>
+            <?= e($nama) ?>
+        </p>
+
+        <p>
+            <strong>NIM:</strong>
+            <?= e($nim) ?>
+        </p>
+
+        <p>
+            <strong>Program Studi:</strong>
+            <?= e($programStudi) ?>
+        </p>
+
+        <p>
+            <strong>Kegiatan:</strong>
+            <?= e($kegiatan) ?>
+        </p>
+
+        <p>
+            <strong>Jumlah Peserta:</strong>
+            <?= e($jumlah) ?>
+        </p>
+
+    </div>
+
+    <p>
+        Data pendaftaran berhasil diproses.
+    </p>
+
+    <a href="form.php">
+        Kembali ke Form
+    </a>
+
+</div>
+
+</body>
+
+</html>
